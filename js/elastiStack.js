@@ -53,12 +53,27 @@
 		// distDragMax: if the user drags the image in a area that exceeds [distDragMax]px for either x or y then the image moves away from the stack 
 		distDragMax : 450,
 		// callback
+		isRandom : false , 
 		onUpdateStack : function( current ) { return false; }
 	};
+
+	function shuffle(array) {
+	  var m = array.length, t, i;
+	  while (m) {
+	    i = Math.floor(Math.random() * m--);
+	    t = array[m];
+	    array[m] = array[i];
+	    array[i] = t;
+	  }
+	  return array;
+	}
 
 	ElastiStack.prototype._init = function() {
 		// items
 		this.items = [].slice.call( this.container.children );
+		if ( this.options.isRandom ){
+		    shuffle(this.items);
+		}
 		// total items
 		this.itemsCount = this.items.length;
 		// current item's index (the one on the top of the stack)
@@ -305,6 +320,35 @@
 			return this._secondItem();
 		}
 	};
+
+	ElastiStack.prototype.turnRandom = function() { 
+		if ( this.options.isRandom ){
+			var nowItem = this.items[this.current];
+			this.items = [].slice.call( this.container.children );
+			this.current = this.items.indexOf(nowItem);
+			this.options.isRandom = false ;
+		} else {
+			var nowItem = this.items[this.current];
+			this.items = [].slice.call( this.container.children );
+		    shuffle(this.items);
+			this.current = this.items.indexOf(nowItem);
+			this.options.isRandom = true ;
+		}
+		var item1 = this._firstItem(), item2 = this._secondItem(), item3 = this._thirdItem();
+		for ( var i = 0 ; i < this.items.length ; i ++ ){
+			if ( this.items[i] !== item1 && this.items[i] !== item2 && this.items[i] !== item3  ){
+				this.items[i].style.opacity = 0 ;
+			} else {
+				this.items[i].style.opacity = 1 ;
+			}
+		}
+		this._setStackStyle();
+	};
+
+	ElastiStack.prototype.isRandom = function() { 
+		return this.options.isRandom ;
+	};
+
 
 	// add to global namespace
 	window.ElastiStack = ElastiStack;
