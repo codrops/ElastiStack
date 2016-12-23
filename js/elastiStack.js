@@ -32,7 +32,8 @@
 			'msTransition': 'MSTransitionEnd',
 			'transition': 'transitionend'
 		},
-		transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ];
+		transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ],
+		isInit = false ;
 
 	function ElastiStack( el, options ) {
 		this.container = el;
@@ -68,25 +69,29 @@
 	  return array;
 	}
 
+	ElastiStack.prototype.initSetting = function(){
+		this.itemsCount = this.items.length;
+		this._setStackStyle();
+		if( this.itemsCount <= 1 ) return;
+		if ( !isInit ){
+			this._initDragg();
+			this._initEvents();
+		}
+		isInit = true ;
+	}
+	
 	ElastiStack.prototype._init = function() {
 		// items
 		this.items = [].slice.call( this.container.children );
 		if ( this.options.isRandom ){
 		    shuffle(this.items);
 		}
-		// total items
-		this.itemsCount = this.items.length;
 		// current item's index (the one on the top of the stack)
 		this.current = 0;
 		// set initial styles
-		this._setStackStyle();
-		// return if no items or only one
-		if( this.itemsCount <= 1 ) return;
-		// add dragging capability
-		this._initDragg();
-		// init drag events
-		this._initEvents();
+		this.initSetting();
 	};
+	
 
 	ElastiStack.prototype._initEvents = function() {
 		var self = this;
@@ -97,7 +102,6 @@
 
 	ElastiStack.prototype._setStackStyle = function() {
 		var item1 = this._firstItem(), item2 = this._secondItem(), item3 = this._thirdItem();
-
 		if( item1 ) {
 			item1.style.opacity = 1;
 			item1.style.zIndex = 4;
@@ -135,7 +139,6 @@
 
 		// other items move back to stack
 		var item2 = this._secondItem(), item3 = this._thirdItem();
-
 		if( item2 ) {
 			classie.add( item2, 'move-back' );
 			classie.add( item2, 'animate' );
@@ -348,7 +351,47 @@
 	ElastiStack.prototype.isRandom = function() { 
 		return this.options.isRandom ;
 	};
+	
+	ElastiStack.prototype.add = function(el){
+		this.container.appendChild(el);
+		this.items.push(el);
+		this.initSetting();
+	}
+	
+	ElastiStack.prototype.getSize = function(){
+		return this.itemsCount ;
+	}
+	
+	
+	ElastiStack.prototype.getCurrent = function(){
+		return this.current ;
+	}
+	
+	ElastiStack.prototype.getCurrentItem = function(){
+		return this.items[this.current] ;
+	}
+	
+	ElastiStack.prototype.insert = function(el,index){
+		this.container.insertBefore(el,this.container.childNodes[index]);
+		this.items.splice(index, 0, el);
+		this.initSetting();
+	}
+	
+	ElastiStack.prototype.remove = function(index){
+		if ( this.items.length === 0 ){
+			return ;
+		}
+		if ( this.current >= index ){
+			this.current -- ;
+		}
+		this.container.removeChild(this.container.childNodes[index]);
+		this.items.splice(index, 1);
+		if ( this.current >= this.items.length ){
+			this.current = 0 ;
+		}
+		this.initSetting();
 
+	}
 
 	// add to global namespace
 	window.ElastiStack = ElastiStack;
