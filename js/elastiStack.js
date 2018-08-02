@@ -265,7 +265,6 @@
 	};
 
 	ElastiStack.prototype._initDragg = function() {
-		//todo change lib. Draggabilly prevent following a link from mobile device
 		this.draggie = new Draggabilly( this.items[ this.current ] );
 	};
 
