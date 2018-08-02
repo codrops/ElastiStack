@@ -35,6 +35,8 @@
 		transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ],
 		isInit = false ;
 
+    console.log(is3d);
+
 	function ElastiStack( el, options ) {
 		this.container = el;
 		this.options = extend( {}, this.options );
@@ -220,10 +222,6 @@
 	};
 
 	ElastiStack.prototype._onDragStart = function( instance, event, pointer ) {
-
-		if(event.target.tagName === 'A' && event.target.href){
-			window.location.href =  event.target.href;
-		}
 
 		// remove transition classes if any
 		var item2 = this._secondItem(), item3 = this._thirdItem();
