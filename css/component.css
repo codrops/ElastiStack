@@ -26,6 +26,10 @@
 	text-align: center;
 }
 
+.elasticstack li a:hover{
+	color: #000;
+}
+
 .elasticstack li {
 	position: absolute;
 	z-index: 1;
