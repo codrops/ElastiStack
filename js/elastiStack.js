@@ -35,7 +35,6 @@
 		transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ],
 		isInit = false ;
 
-
 	function ElastiStack( el, options ) {
 		this.container = el;
 		this.options = extend( {}, this.options );
