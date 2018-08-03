@@ -221,10 +221,6 @@
 
 	ElastiStack.prototype._onDragStart = function( instance, event, pointer ) {
 
-		if(event.target.tagName === 'A' && event.target.href){
-			window.location.href =  event.target.href;
-		}
-
 		// remove transition classes if any
 		var item2 = this._secondItem(), item3 = this._thirdItem();
 
@@ -268,7 +264,6 @@
 	};
 
 	ElastiStack.prototype._initDragg = function() {
-		//todo change lib. Draggabilly prevent following a link from mobile device
 		this.draggie = new Draggabilly( this.items[ this.current ] );
 	};
 
